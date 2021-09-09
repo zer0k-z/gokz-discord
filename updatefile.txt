@@ -1,0 +1,18 @@
+"Updater" {
+	"Information" {
+		"Version" {
+			"Latest" "1.0"
+		}
+        
+        "Notes"     "Source available at https://github.com/zer0k-z/gokz-discord2"
+	}
+
+	"Files" {
+		"Plugin" "Path_SM/plugins/gokz-discord.smx"
+
+		"Source" "Path_SM/scripting/gokz-discord.sp"
+		"Source" "Path_SM/scripting/gokz-discord/embeds.sp"
+		"Source" "Path_SM/scripting/gokz-discord/globals.sp"
+        "Source" "Path_SM/scripting/gokz-discord/gokz-forwards.sp"
+	}
+}
