@@ -29,7 +29,7 @@ public Plugin myinfo =
 	name = "gokz-discord",
 	author = "zer0.k",
 	description = "",
-	version = "1.0.7",
+	version = "3.0",
 	url = "https://github.com/zer0k-z/gokz-discord"
 };
 
