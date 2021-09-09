@@ -4,7 +4,7 @@
 	{
 		"Version" 
 		{
-			"Latest" "4.0"
+			"Latest" "4.1"
 		}
 		
 		"Notes"     "Source available at https://github.com/zer0k-z/gokz-discord2"
@@ -12,11 +12,11 @@
 
 	"Files" 
 	{
-		"Plugin" "Path_SM/plugins/gokz-discord.smx"
+		"Plugin" "addons/sourcemod/plugins/gokz-discord.smx"
 
-		"Source" "Path_SM/scripting/gokz-discord.sp"
-		"Source" "Path_SM/scripting/gokz-discord/embeds.sp"
-		"Source" "Path_SM/scripting/gokz-discord/globals.sp"
-		"Source" "Path_SM/scripting/gokz-discord/gokz-forwards.sp"
+		"Source" "addons/sourcemod/scripting/gokz-discord.sp"
+		"Source" "addons/sourcemod/scripting/gokz-discord/embeds.sp"
+		"Source" "addons/sourcemod/scripting/gokz-discord/globals.sp"
+		"Source" "addons/sourcemod/scripting/gokz-discord/gokz-forwards.sp"
 	}
 }
