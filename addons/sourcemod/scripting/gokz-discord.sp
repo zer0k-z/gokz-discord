@@ -31,7 +31,7 @@ public Plugin myinfo =
 	name = "gokz-discord",
 	author = "zer0.k",
 	description = "",
-	version = "0.0.1",
+	version = "0.0.2",
 	url = "https://github.com/zer0k-z/gokz-discord"
 };
 
@@ -43,7 +43,6 @@ public void OnPluginStart()
 	CreateConVars();
 	InitGlobals();
 	InitAnnounceTimer();
-	RegConsoleCmd("sm_testdiscord", DiscordInit);
 
 	if (LibraryExists("updater"))
 	{
@@ -69,6 +68,7 @@ static void CreateConVars()
 	gCV_ShowThumbnail = AutoExecConfig_CreateConVar("gokz_discord_show_thumbnail", "1", "Show thumbnail in the announcement", _, true, 0.0, true, 1.0);
 	gCV_ShowRank = AutoExecConfig_CreateConVar("gokz_discord_show_rank", "1", "Show rank in the announcement", _, true, 0.0, true, 1.0);
 	gCV_ShowServer = AutoExecConfig_CreateConVar("gokz_discord_show_server", "1", "Show server in the announcement", _, true, 0.0, true, 1.0);
+
 	AutoExecConfig_ExecuteFile();
 	AutoExecConfig_CleanFile();	
 }
@@ -126,21 +126,6 @@ public void OnLibraryAdded(const char[] name)
 	{
 		gB_GOKZLocal = true;
 	}
-}
-
-public Action Test(int client, int argc)
-{
-	return Plugin_Handled;
-}
-
-public Action DiscordInit(int client, int argc)
-{
-	Record record;
-	record.Init(client, 1, 133333.37, 0);
-	record.InitLocal(158416176, 1, 1, GOKZ_GetCoreOption(client, Option_Mode), 0, 133333.37, 0, false, 5.0, 1, 2, false, -5.0, 1, 2);
-	record.InitGlobal(client, 1, GOKZ_GetCoreOption(client, Option_Mode), TimeType_Pro, 2, 2, 133333.37);
-	gA_Records.PushArray(record, sizeof(Record));
-	return Plugin_Handled;
 }
 
 void InitAnnounceTimer()
