@@ -1,15 +1,31 @@
 DiscordEmbed CreateEmbed(Record record)
 {
-	DiscordEmbed e = new DiscordEmbed();
-	e.WithTitle(RunType(record));
-	e.AddField(PlayerField(record));
-	e.AddField(MapField(record));
-	e.AddField(CourseField(record));
-	e.AddField(RunTimeField(record));
-	e.AddField(RankField(record));
-	e.AddField(ServerField());
-	e.WithThumbnail(Thumbnail(record));
-	return e;
+	DiscordEmbed embed = new DiscordEmbed();
+	embed.WithTitle(TitleField(record));
+	embed.AddField(PlayerField(record));
+	embed.AddField(MapField(record));
+	if (gCV_ShowCourse.BoolValue)
+	{
+		embed.AddField(CourseField(record));
+	}
+	if (gCV_ShowRunTime.IntValue > 0)
+	{
+		embed.AddField(RunTimeField(record));
+	}	
+	if (gCV_ShowRank.BoolValue)
+	{
+		embed.AddField(RankField(record));
+	}
+	if (gCV_ShowServer.BoolValue)
+	{
+		embed.AddField(ServerField());
+	}
+	if (gCV_ShowThumbnail.BoolValue)
+	{
+		embed.WithThumbnail(Thumbnail(record));
+	}
+	embed.SetColor(Color(record));
+	return embed;
 }
 
 DiscordEmbedField PlayerField(Record record)
@@ -21,8 +37,20 @@ DiscordEmbedField PlayerField(Record record)
 
 DiscordEmbedField MapField(Record record)
 {
+	char buffer[64];
+	gKV_DiscordConfig.Rewind();
+	if (!gKV_DiscordConfig.JumpToKey("Map"))
+	{
+		SetFailState("[GOKZ-Discord] Failed to obtain Discord Map config!");
+	}
+	
+	gKV_DiscordConfig.GetString("url", buffer, sizeof(buffer));
+
+	DiscordReplaceString(record, buffer, sizeof(buffer));
+	
 	char value[MAX_FIELD_VALUE_LENGTH];
-	FormatEx(value, MAX_FIELD_VALUE_LENGTH, "[%s](https://www.kzstats.com/maps/%s?mode=kz_timer)", record.mapName, record.mapName);
+	FormatEx(value, MAX_FIELD_VALUE_LENGTH, "[%s](%s)", record.mapName, buffer);
+	LogMessage("value = %s", value);
 	return new DiscordEmbedField("Map", value, true);
 }
 
@@ -54,7 +82,7 @@ DiscordEmbedField RunTimeField(Record record)
 	{
 		StrCat(value, MAX_FIELD_VALUE_LENGTH, teleports);
 	}
-	if (record.matchedLocal)
+	if (record.matchedLocal && gCV_ShowRunTime.IntValue >= 2)
 	{
 		if (!record.firstTime)
 		{
@@ -113,7 +141,7 @@ DiscordEmbedField RankField(Record record)
 	return new DiscordEmbedField("Rank", value, true);
 }
 
-DiscordEmbedField ServerField()
+static DiscordEmbedField ServerField()
 {
 	char serverName[128];
 	GetConVarString(FindConVar("hostname"), serverName, sizeof(serverName));
@@ -128,73 +156,28 @@ DiscordEmbedField ServerField()
 	- Top time global
 	- Top time local
 */
-static char[] RunType(Record record)
+static char[] TitleField(Record record)
 {
-	char ret[32];
-	if (record.matchedGlobal)
+	int recType = record.GetRecordType(gCV_MinRankLocal.IntValue, gCV_MinRankGlobal.IntValue);
+	char title[32];
+	Format(title, sizeof(title), "%T", gC_RecordType_Names[recType], LANG_SERVER);
+
+	return title;
+}
+
+static char[] Color(Record record)
+{
+	char buffer[64];
+	gKV_DiscordConfig.Rewind();
+	if (!gKV_DiscordConfig.JumpToKey("EmbedColors"))
 	{
-		// Pro WR
-		if (record.rankGlobal == 1 && record.timeType == TimeType_Pro)
-		{
-			ret = "New PRO World Record!";
-			return ret;
-		}
-		// Overall WR
-		else if (record.rankOverallGlobal == 1)
-		{
-			ret = "New NUB World Record!";
-			return ret;
-		}
+		SetFailState("[GOKZ-Discord] Failed to obtain Discord EmbedColors config!");
 	}
-	// Server record takes priority over global top time
-	if (record.matchedLocal)
-	{
-		if (record.rankPro == 1)
-		{
-			if (record.maxRankPro == 1 && record.firstTime) 
-			{
-				ret = "First Server PRO Completion!";
-				return ret;
-			}
-			else if (record.pbDiffPro < 0.0)
-			{
-				ret = "New PRO Server Record!";
-				return ret;
-			}			
-		}
-		else if (record.rank == 1)
-		{
-			if (record.maxRank == 1 && record.firstTime) 
-			{
-				ret = "First Server NUB Completion!";
-				return ret;
-			}
-			else if (record.pbDiff < 0.0)
-			{
-				ret = "New NUB Server Record!";
-				return ret;
-			}
-		}
-	}
-	// Back to global, now check for top time
-	if (record.matchedGlobal)
-	{
-		if (record.rankGlobal <= gI_MinRankGlobal || record.rankOverallGlobal <= gI_MinRankGlobal)
-		{
-			ret = "New Global Top Time!";
-			return ret;
-		}
-	}
-	if (record.matchedLocal)
-	{
-		if (record.pbDiff < 0.0 || record.pbDiffPro < 0.0 || record.firstTime)
-		{
-			if (record.rankPro <= gI_MinRankLocal || record.rank <= gI_MinRankLocal)
-			{
-				ret = "New Server Top Time!";
-				return ret;
-			}
-		}
-	}
-	return ret;
+
+	gKV_DiscordConfig.GotoFirstSubKey();
+	int recType = record.GetRecordType(gCV_MinRankLocal.IntValue, gCV_MinRankGlobal.IntValue);
+	gKV_DiscordConfig.GetSectionName(buffer, sizeof(buffer));
+	gKV_DiscordConfig.GetString(gC_RecordType_Names[recType], buffer, sizeof(buffer));
+	LogMessage("Color chosen: %s", buffer);
+	return buffer;
 }

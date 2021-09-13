@@ -23,8 +23,22 @@ enum
 	RecordType_LocalNubSR,
 	RecordType_LocalProSR,
 	RecordType_GlobalNubWR,
-	RecordType_GlobalProWR,
-	RecordType_Count
+	RecordType_GlobalProWR
+};
+
+stock char gC_RecordType_Names[RecordType_GlobalProWR + 1][] = 
+{
+	"Default",
+	"Local Nub PB",
+	"Local Pro PB",
+	"Local Nub Top",
+	"Local Pro Top",
+	"Global Nub Top",
+	"Global Pro Top",
+	"Nub SR",
+	"Pro SR",
+	"Nub WR",
+	"Pro WR"
 };
 
 enum struct Record {
@@ -61,7 +75,7 @@ enum struct Record {
 	// Don't compare matched runs
 	bool matchedLocal;
 	bool matchedGlobal;
-	int recordType;
+
 	// Core methods
 	void Init(int client, int course, float time, int teleportsUsed)
 	{
@@ -133,18 +147,86 @@ enum struct Record {
 		}
 	}
 
-	void UpdateRecordType()
+	int GetRecordType(int minTopRank, int minTopRankGlobal)
 	{
-		if (!this.matchedLocal && !this.matchedGlobal) return;
-		else
+		int recordType = RecordType_Default;
+		if (this.matchedGlobal)
 		{
-			if (this.matchedLocal)
+			if (this.timeType == TimeType_Nub && this.rankOverallGlobal != 0)
 			{
-				if (this.teleportsUsed == 0)
+				if (this.rankOverallGlobal == 1)
 				{
-					
+					recordType = IntMax(recordType, RecordType_GlobalNubWR);
+				}
+				else if (this.rankOverallGlobal <= minTopRankGlobal)
+				{
+					recordType = IntMax(recordType, RecordType_GlobalNubTop);
+				}
+			}
+			else if (this.timeType == TimeType_Pro)
+			{
+				if (this.rankOverallGlobal != 0)
+				{
+					if (this.rankOverallGlobal == 1)
+					{
+						recordType = IntMax(recordType, RecordType_GlobalProWR);
+					}
+					else if (this.rankOverallGlobal <= minTopRankGlobal)
+					{
+						recordType = IntMax(recordType, RecordType_GlobalProTop);
+					}
+				}
+				if (this.rankGlobal == 1)
+				{
+					recordType = IntMax(recordType, RecordType_GlobalProWR);
+				}
+				else if (this.rankGlobal <= minTopRankGlobal)
+				{
+					recordType = IntMax(recordType, RecordType_GlobalProTop);
 				}
 			}
 		}
+		if (this.matchedLocal)
+		{
+			if ((this.firstTime || this.pbDiff < 0) && this.rank == 1)
+			{
+				recordType = IntMax(recordType, RecordType_LocalNubSR);
+			}
+			if ((this.firstTimePro || this.pbDiffPro < 0) && this.rankPro == 1)
+			{
+				recordType = IntMax(recordType, RecordType_LocalProSR);
+			}
+			if (this.teleportsUsed == 0)
+			{
+				if (this.firstTimePro)
+				{
+					recordType = IntMax(recordType, RecordType_LocalProPB);
+				}
+				else if (this.pbDiffPro < 0)
+				{
+					recordType = IntMax(recordType, RecordType_LocalProPB);
+				}
+				if (recordType == RecordType_LocalProPB && this.rankPro <= minTopRank)
+				{
+					recordType = IntMax(recordType, RecordType_LocalProTop);
+				}
+			}
+			else
+			{
+				if (this.firstTime)
+				{
+					recordType = IntMax(recordType, RecordType_LocalNubPB);
+				}
+				else if (this.pbDiff < 0)
+				{
+					recordType = IntMax(recordType, RecordType_LocalNubPB);
+				}
+				if (recordType == RecordType_LocalNubPB && this.rank < minTopRank)
+				{
+					recordType = IntMax(recordType, RecordType_LocalNubTop)
+				}
+			}
+		}
+		return recordType;
 	}
 }

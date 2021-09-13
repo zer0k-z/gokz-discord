@@ -1,0 +1,47 @@
+"Phrases"
+{
+    "Pro WR"
+    {
+        "en"    "New PRO World Record!"
+    }
+    "Nub WR"
+    {
+        "en"    "New NUB World Record!"
+    }
+    "Pro SR"
+    {
+        "en"    "New PRO Server Record!"
+    }
+    "Nub SR"
+    {
+        "en"    "New NUB Server Record!"
+    }
+    "Global Pro Top"
+    {
+        "en"    "New Global PRO Top Time!"
+    }
+    "Global Nub Top"
+    {
+        "en"    "New Global NUB Top Time!"
+    }
+    "Local Pro Top"
+    {
+        "en"    "New Server PRO Top Time!"
+    }
+    "Local Nub Top"
+    {
+        "en"    "New Server NUB Top Time!"
+    }
+    "Local Pro PB"
+    {
+        "en"    "New Server PRO Personal Best!"
+    }
+    "Local Nub PB"
+    {
+        "en"    "New Server NUB Personal Best!"
+    }
+    "Default" // Unused
+    {
+        "en"    "Run Registered!"
+    }
+}
