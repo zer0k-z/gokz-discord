@@ -4,7 +4,7 @@
 	{
 		"Version" 
 		{
-			"Latest" "4.2"
+			"Latest" "0.0.3"
 		}
 		
 		"Notes"     "Source available at https://github.com/zer0k-z/gokz-discord2"
@@ -18,5 +18,7 @@
 		"Source" "/addons/sourcemod/scripting/gokz-discord/embeds.sp"
 		"Source" "/addons/sourcemod/scripting/gokz-discord/globals.sp"
 		"Source" "/addons/sourcemod/scripting/gokz-discord/gokz-forwards.sp"
+		"Source" "/addons/sourcemod/scripting/gokz-discord/helper.sp"
+		"Source" "/addons/sourcemod/scripting/include/record.inc"
 	}
 }
