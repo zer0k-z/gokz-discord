@@ -1,0 +1,15 @@
+[submodule "submodules/gokz"]
+	path = submodules/gokz
+	url = https://zer0k_z@bitbucket.org/kztimerglobalteam/gokz.git
+[submodule "submodules/discord-api"]
+	path = submodules/discord-api
+	url = https://github.com/KillStr3aK/discord-api.git
+[submodule "submodules/DateTime"]
+	path = submodules/DateTime
+	url = https://github.com/KillStr3aK/DateTime
+[submodule "submodules/sm-json"]
+	path = submodules/sm-json
+	url = https://github.com/clugg/sm-json
+[submodule "submodules/SteamWorks"]
+	path = submodules/SteamWorks
+	url = https://github.com/KyleSanderson/SteamWorks.git

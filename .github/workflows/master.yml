@@ -1,0 +1,91 @@
+name: Compile with SourceMod
+
+on:
+  pull_request:
+    branches: master
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        SM_VERSION: ["1.10"]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+
+      - name: Set environment variables
+        run: |
+          SOURCEMOD_PATH=$GITHUB_WORKSPACE/addons/sourcemod
+          echo "SOURCEMOD_PATH=$SOURCEMOD_PATH" >> $GITHUB_ENV
+          echo "SCRIPTS_PATH=addons/sourcemod/scripting" >> $GITHUB_ENV
+          echo "PLUGINS_PATH=$SOURCEMOD_PATH/plugins" >> $GITHUB_ENV
+
+      - name: Setup SourcePawn Compiler ${{ matrix.SM_VERSION }}
+        uses: rumblefrog/setup-sp@master
+        with:
+          version: ${{ matrix.SM_VERSION }}
+
+      - name: Compile Plugins
+        run: |
+          for file in gokz-discord*.sp
+          do
+            echo -e "\nCompiling $file..."
+            spcomp -w234 -O2 -v2 -i include $file
+          done
+        working-directory: ${{ env.SCRIPTS_PATH }}
+        
+      - name: Move compiled plugins
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          rm -rf $PLUGINS_PATH
+          mkdir -p $PLUGINS_PATH
+          rsync -av --include='*/' --include="*.smx" --exclude="*" --prune-empty-dirs --remove-source-files $SCRIPTS_PATH/ $PLUGINS_PATH/
+
+      - name: Updater
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: updater
+          publish_dir: ./
+
+      - name: Move folders to build
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          mkdir build
+          mv ./addons build/
+
+      - name: Remove unnecessary files and folders from build
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          rm -rf addons/sourcemod/scripting
+        working-directory: ./build
+
+      - name: Compress package
+        if: startsWith(github.ref, 'refs/tags/')
+        run: zip -9rq ../gokz-discord.zip *
+        working-directory: ./build
+        
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: ${{ github.ref }}
+          name: ${{ steps.get_version.outputs.VERSION }}
+          files: |
+            gokz-discord.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

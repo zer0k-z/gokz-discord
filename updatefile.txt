@@ -1,0 +1,22 @@
+"Updater" 
+{
+	"Information" 
+	{
+		"Version" 
+		{
+			"Latest" "4.2"
+		}
+		
+		"Notes"     "Source available at https://github.com/zer0k-z/gokz-discord2"
+	}
+
+	"Files" 
+	{
+		"Plugin" "/addons/sourcemod/plugins/gokz-discord.smx"
+
+		"Source" "/addons/sourcemod/scripting/gokz-discord.sp"
+		"Source" "/addons/sourcemod/scripting/gokz-discord/embeds.sp"
+		"Source" "/addons/sourcemod/scripting/gokz-discord/globals.sp"
+		"Source" "/addons/sourcemod/scripting/gokz-discord/gokz-forwards.sp"
+	}
+}

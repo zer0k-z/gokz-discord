@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="SourceMod SDK">
+      <UniqueIdentifier>{31958233-BB2D-4e41-A8F9-CE8A4684F436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CDetour">
+      <UniqueIdentifier>{165bd3d1-013b-4a7c-9ae8-7726e1167ab8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\asm">
+      <UniqueIdentifier>{ddc20a5f-f759-411d-b126-0e969544e25a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CDetour">
+      <UniqueIdentifier>{a4151558-d2e9-4b94-bd9f-9e411544f549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\asm">
+      <UniqueIdentifier>{760cee12-5e87-4fa0-a3f9-bb85ea8c88de}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\extension.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sdk\smsdk_ext.cpp">
+      <Filter>SourceMod SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gsnatives.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\swforwards.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\swgamedata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\swgameserver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ssnatives.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\swgsdetours.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\swgshooks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\swhttp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\swhttprequest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CDetour\detours.cpp">
+      <Filter>Source Files\CDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="..\asm\asm.c">
+      <Filter>Source Files\asm</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\extension.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sdk\smsdk_config.h">
+      <Filter>SourceMod SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sdk\smsdk_ext.h">
+      <Filter>SourceMod SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gsnatives.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\swforwards.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\swgamedata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\swgameserver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ssnatives.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\swgsdetours.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\swgshooks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\swhttp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\swhttprequest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CDetour\detourhelpers.h">
+      <Filter>Header Files\CDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CDetour\detours.h">
+      <Filter>Header Files\CDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="..\asm\asm.h">
+      <Filter>Header Files\asm</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
