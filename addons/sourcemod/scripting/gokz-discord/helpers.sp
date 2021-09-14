@@ -31,4 +31,12 @@ void DiscordReplaceString(Record record, char[] input, int size)
 	ReplaceString(input, size, "HOST_IP", buffer);
 	IntToString(FindConVar("hostport").IntValue, buffer, sizeof(buffer));
 	ReplaceString(input, size, "HOST_PORT", buffer);
+
+	gKV_DiscordConfig.Rewind();
+	if (!gKV_DiscordConfig.JumpToKey("Modes"))
+	{
+		SetFailState("[GOKZ-Discord] Failed to obtain Discord Modes config!");
+	}
+	gKV_DiscordConfig.GetString(gC_ModeNames[record.mode], buffer, sizeof(buffer));
+	ReplaceString(input, size, "MODE_NAME", buffer);
 }
