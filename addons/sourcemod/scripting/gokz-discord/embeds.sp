@@ -48,7 +48,7 @@ static DiscordEmbedField PlayerField(Record record)
 
 static DiscordEmbedField ModeField(Record record)
 {
-	return new DiscordEmbedField("Mode", gC_ModeNames[record.mode], false);
+	return new DiscordEmbedField("Mode", gC_ModeNames[record.mode], true);
 }
 
 static DiscordEmbedField MapField(Record record)
@@ -115,7 +115,7 @@ static DiscordEmbedField RunTimeField(Record record)
 				record.pbDiff > 0.0 ? "+" : "", record.pbDiff);
 			StrCat(value, MAX_FIELD_VALUE_LENGTH, improve);
 		}
-		if (!record.firstTimePro)
+		if (!record.firstTimePro && record.teleportsUsed == 0)
 		{
 			char improve[32];
 			FormatEx(improve, sizeof(improve), "\n(%s%.2f PRO SPB)",
