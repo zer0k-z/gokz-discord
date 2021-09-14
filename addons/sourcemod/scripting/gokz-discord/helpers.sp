@@ -1,5 +1,20 @@
+void UpdateDiscordKV()
+{
+	gKV_DiscordConfig = new KeyValues("Discord");
+	
+	char sFile[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, sFile, sizeof(sFile), "configs/gokz-discord.cfg");
+
+	if (!FileExists(sFile))
+	{
+		SetFailState("[GOKZ-Discord] \"%s\" not found!", sFile);
+	}
+	gKV_DiscordConfig.ImportFromFile(sFile);
+}
+
 void GetWebHook(char[] url, int size)
 {
+	UpdateDiscordKV();
 	gKV_DiscordConfig.Rewind();
 	if (!gKV_DiscordConfig.JumpToKey("Webhook"))
 	{
