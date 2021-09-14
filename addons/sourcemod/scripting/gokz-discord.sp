@@ -31,7 +31,7 @@ public Plugin myinfo =
 	name = "gokz-discord",
 	author = "zer0.k",
 	description = "",
-	version = "0.0.4",
+	version = "0.0.5",
 	url = "https://github.com/zer0k-z/gokz-discord"
 };
 
@@ -57,9 +57,9 @@ static void CreateConVars()
 	AutoExecConfig_SetCreateFile(true);
 	
 	gCV_UseLocalRank = AutoExecConfig_CreateConVar("gokz_discord_use_local", "1", "Whether local ranking is used.", _, true, 0.0, true, 1.0);
-
 	gCV_UseGlobalRank = AutoExecConfig_CreateConVar("gokz_discord_use_global", "1", "Whether global ranking is used.", _, true, 0.0, true, 1.0);
 	gCV_AnnounceBonus = AutoExecConfig_CreateConVar("gokz_discord_announce_bonus", "1", "Whether bonus runs are announced.", _, true, 0.0, true, 1.0);
+
 	gCV_MinRankGlobal = AutoExecConfig_CreateConVar("gokz_discord_min_rank_global", "20", "Minimum rank for top time announcement (Global)", _, true, 1.0);
 	gCV_MinRankLocal = AutoExecConfig_CreateConVar("gokz_discord_min_rank_local", "10", "Minimum rank for top time announcement (Local)", _, true, 1.0);
 	gCV_MinRecordType = AutoExecConfig_CreateConVar("gokz_discord_min_record_type", "5", "Minimum record type for announcement", _, true, 1.0, true, float(RecordType_GlobalProWR));
@@ -69,24 +69,13 @@ static void CreateConVars()
 	gCV_ShowThumbnail = AutoExecConfig_CreateConVar("gokz_discord_show_thumbnail", "1", "Show thumbnail in the announcement", _, true, 0.0, true, 1.0);
 	gCV_ShowRank = AutoExecConfig_CreateConVar("gokz_discord_show_rank", "1", "Show rank in the announcement", _, true, 0.0, true, 1.0);
 	gCV_ShowServer = AutoExecConfig_CreateConVar("gokz_discord_show_server", "1", "Show server in the announcement", _, true, 0.0, true, 1.0);
+
 	AutoExecConfig_ExecuteFile();
 	AutoExecConfig_CleanFile();	
 }
 static void InitGlobals()
 {
 	gA_Records = new ArrayList(sizeof(Record));
-
-	gKV_DiscordConfig = new KeyValues("Discord");
-	
-	char sFile[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, sFile, sizeof(sFile), "configs/gokz-discord.cfg");
-
-	if (!FileExists(sFile))
-	{
-		SetFailState("[GOKZ-Discord] \"%s\" not found!", sFile);
-	}
-
-	gKV_DiscordConfig.ImportFromFile(sFile);
 }
 
 public void OnAllPluginsLoaded()

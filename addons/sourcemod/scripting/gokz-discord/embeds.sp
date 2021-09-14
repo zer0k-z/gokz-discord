@@ -3,6 +3,7 @@ DiscordEmbed CreateEmbed(Record record)
 	DiscordEmbed embed = new DiscordEmbed();
 	embed.WithTitle(TitleField(record));
 	embed.AddField(PlayerField(record));
+	embed.AddField(ModeField(record));
 	embed.AddField(MapField(record));
 	if (gCV_ShowCourse.BoolValue)
 	{
@@ -18,7 +19,7 @@ DiscordEmbed CreateEmbed(Record record)
 	}
 	if (gCV_ShowServer.BoolValue)
 	{
-		embed.AddField(ServerField());
+		embed.AddField(ServerField(record));
 	}
 	if (gCV_ShowThumbnail.BoolValue)
 	{
@@ -28,14 +29,29 @@ DiscordEmbed CreateEmbed(Record record)
 	return embed;
 }
 
-DiscordEmbedField PlayerField(Record record)
+static DiscordEmbedField PlayerField(Record record)
 {
+	char buffer[768];
+	gKV_DiscordConfig.Rewind();
+	if (!gKV_DiscordConfig.JumpToKey("Player"))
+	{
+		SetFailState("[GOKZ-Discord] Failed to obtain Discord Player config!");
+	}
+	
+	gKV_DiscordConfig.GetString("url", buffer, sizeof(buffer));
+	DiscordReplaceString(record, buffer, sizeof(buffer));
+
 	char value[MAX_FIELD_VALUE_LENGTH];
-	FormatEx(value, MAX_FIELD_VALUE_LENGTH, "[%s](https://steamcommunity.com/profiles/%s)", record.playerName, record.steamID64);
-	return new DiscordEmbedField("Player", value, false);	
+	FormatEx(value, MAX_FIELD_VALUE_LENGTH, "[%s](%s)", record.playerName, buffer);
+	return new DiscordEmbedField("Player", value, true);
 }
 
-DiscordEmbedField MapField(Record record)
+static DiscordEmbedField ModeField(Record record)
+{
+	return new DiscordEmbedField("Mode", gC_ModeNames[record.mode], false);
+}
+
+static DiscordEmbedField MapField(Record record)
 {
 	char buffer[64];
 	gKV_DiscordConfig.Rewind();
@@ -50,11 +66,10 @@ DiscordEmbedField MapField(Record record)
 	
 	char value[MAX_FIELD_VALUE_LENGTH];
 	FormatEx(value, MAX_FIELD_VALUE_LENGTH, "[%s](%s)", record.mapName, buffer);
-	LogMessage("value = %s", value);
 	return new DiscordEmbedField("Map", value, true);
 }
 
-DiscordEmbedField CourseField(Record record)
+static DiscordEmbedField CourseField(Record record)
 {
 	if (record.course == 0) return new DiscordEmbedField("Course", "Main", true);
 	else
@@ -65,14 +80,23 @@ DiscordEmbedField CourseField(Record record)
 	}
 }
 
-DiscordEmbedThumbnail Thumbnail(Record record)
+static DiscordEmbedThumbnail Thumbnail(Record record)
 {
 	char url[2048];
-	FormatEx(url, sizeof(url), "https://github.com/KZGlobalTeam/map-images/raw/public/thumbnails/%s.jpg", record.mapName);
-	return new DiscordEmbedThumbnail(url, 200, 113);
+	gKV_DiscordConfig.Rewind();
+	if (!gKV_DiscordConfig.JumpToKey("Thumbnail"))
+	{
+		SetFailState("[GOKZ-Discord] Failed to obtain Discord Thumbnail config!");
+	}
+	
+	gKV_DiscordConfig.GetString("url", url, sizeof(url));
+	DiscordReplaceString(record, url, sizeof(url));
+	int height = gKV_DiscordConfig.GetNum("height");
+	int width = gKV_DiscordConfig.GetNum("width");
+	return new DiscordEmbedThumbnail(url, height, width);
 }
 
-DiscordEmbedField RunTimeField(Record record)
+static DiscordEmbedField RunTimeField(Record record)
 {
 	char value[MAX_FIELD_VALUE_LENGTH];
 	char teleports[16];
@@ -102,7 +126,7 @@ DiscordEmbedField RunTimeField(Record record)
 	return new DiscordEmbedField("Runtime", value, true);	
 }
 
-DiscordEmbedField RankField(Record record)
+static DiscordEmbedField RankField(Record record)
 {
 	// Rank
 	// Overall #1/2 (Global #12)
@@ -141,21 +165,27 @@ DiscordEmbedField RankField(Record record)
 	return new DiscordEmbedField("Rank", value, true);
 }
 
-static DiscordEmbedField ServerField()
+static DiscordEmbedField ServerField(Record record)
 {
-	char serverName[128];
-	GetConVarString(FindConVar("hostname"), serverName, sizeof(serverName));
-	return new DiscordEmbedField("Server", serverName, false);
+	// Max field length is 1024.
+	char url[768];
+	char name[32];
+	gKV_DiscordConfig.Rewind();
+	if (!gKV_DiscordConfig.JumpToKey("Server"))
+	{
+		SetFailState("[GOKZ-Discord] Failed to obtain Discord Server config!");
+	}
+	gKV_DiscordConfig.GetString("Name", name, sizeof(name));
+	gKV_DiscordConfig.GetString("url", url, sizeof(url));
+	
+	char value[MAX_FIELD_VALUE_LENGTH];
+	FormatEx(value, MAX_FIELD_VALUE_LENGTH, "[%s](%s)", name, url);
+	DiscordReplaceString(record, value, sizeof(value));
+
+	
+	return new DiscordEmbedField("Server", value, false);
 }
 
-/* 
-	Priorities are described as below:
-	- Pro WR
-	- Overall WR 
-	- SR/First completion 
-	- Top time global
-	- Top time local
-*/
 static char[] TitleField(Record record)
 {
 	int recType = record.GetRecordType(gCV_MinRankLocal.IntValue, gCV_MinRankGlobal.IntValue);
@@ -178,6 +208,5 @@ static char[] Color(Record record)
 	int recType = record.GetRecordType(gCV_MinRankLocal.IntValue, gCV_MinRankGlobal.IntValue);
 	gKV_DiscordConfig.GetSectionName(buffer, sizeof(buffer));
 	gKV_DiscordConfig.GetString(gC_RecordType_Names[recType], buffer, sizeof(buffer));
-	LogMessage("Color chosen: %s", buffer);
 	return buffer;
 }
