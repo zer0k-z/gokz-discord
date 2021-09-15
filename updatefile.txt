@@ -4,21 +4,21 @@
 	{
 		"Version" 
 		{
-			"Latest" "0.0.6"
+			"Latest"	"0.0.7"
 		}
 		
-		"Notes"     "Source available at https://github.com/zer0k-z/gokz-discord2"
+		"Notes"		"Source available at https://github.com/zer0k-z/gokz-discord2"
 	}
 
 	"Files" 
 	{
-		"Plugin" "/addons/sourcemod/plugins/gokz-discord.smx"
+		"Plugin"	"/addons/sourcemod/plugins/gokz-discord.smx"
 
-		"Source" "/addons/sourcemod/scripting/gokz-discord.sp"
-		"Source" "/addons/sourcemod/scripting/gokz-discord/embeds.sp"
-		"Source" "/addons/sourcemod/scripting/gokz-discord/globals.sp"
-		"Source" "/addons/sourcemod/scripting/gokz-discord/gokz-forwards.sp"
-		"Source" "/addons/sourcemod/scripting/gokz-discord/helper.sp"
-		"Source" "/addons/sourcemod/scripting/include/record.inc"
+		"Source"	"/addons/sourcemod/scripting/gokz-discord.sp"
+		"Source"	"/addons/sourcemod/scripting/gokz-discord/embeds.sp"
+		"Source"	"/addons/sourcemod/scripting/gokz-discord/globals.sp"
+		"Source"	"/addons/sourcemod/scripting/gokz-discord/gokz-forwards.sp"
+		"Source"	"/addons/sourcemod/scripting/gokz-discord/helper.sp"
+		"Source"	"/addons/sourcemod/scripting/include/record.inc"
 	}
 }
