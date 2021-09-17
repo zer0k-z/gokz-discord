@@ -7,6 +7,10 @@ public void GOKZ_OnTimerEnd_Post(int client, int course, float time, int telepor
 
 public void GOKZ_GL_OnNewTopTime(int client, int course, int mode, int timeType, int rank, int rankOverall, float runTime)
 {
+	if (!gCV_UseLocalRank.BoolValue)
+	{
+		return;
+	}
 	Record record;
 	for (int i = 0; i < gA_Records.Length; i++)
 	{
@@ -21,6 +25,10 @@ public void GOKZ_GL_OnNewTopTime(int client, int course, int mode, int timeType,
 public void GOKZ_LR_OnTimeProcessed(int client, int steamID, int mapID, int course, int mode, int style, float runTime, int teleportsUsed, 
 	bool firstTime, float pbDiff, int rank, int maxRank, bool firstTimePro, float pbDiffPro, int rankPro, int maxRankPro)
 {
+	if (!gCV_UseGlobalRank.BoolValue)
+	{
+		return;
+	}
 	Record record;
 	for (int i = 0; i < gA_Records.Length; i++)
 	{

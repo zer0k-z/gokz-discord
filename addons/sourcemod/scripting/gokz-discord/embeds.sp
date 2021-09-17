@@ -25,6 +25,7 @@ DiscordEmbed CreateEmbed(Record record)
 	{
 		embed.WithThumbnail(Thumbnail(record));
 	}
+	embed.Timestamp = new DateTime(record.timestamp);
 	embed.SetColor(Color(record));
 	return embed;
 }
@@ -99,12 +100,15 @@ static DiscordEmbedThumbnail Thumbnail(Record record)
 static DiscordEmbedField RunTimeField(Record record)
 {
 	char value[MAX_FIELD_VALUE_LENGTH];
-	char teleports[16];
-	Format(teleports, sizeof(teleports), " (%i %s)", record.teleportsUsed, record.teleportsUsed == 1 ? "TP" : "TPs");
-	value = GOKZ_FormatTime(record.runTime);
-	if (record.teleportsUsed != 0)
+	if (gCV_ShowTeleports.BoolValue)
 	{
-		StrCat(value, MAX_FIELD_VALUE_LENGTH, teleports);
+		char teleports[16];
+		Format(teleports, sizeof(teleports), " (%i %s)", record.teleportsUsed, record.teleportsUsed == 1 ? "TP" : "TPs");
+		value = GOKZ_FormatTime(record.runTime);
+		if (record.teleportsUsed != 0)
+		{
+			StrCat(value, MAX_FIELD_VALUE_LENGTH, teleports);
+		}
 	}
 	if (record.matchedLocal && gCV_ShowRunTime.IntValue >= 2)
 	{

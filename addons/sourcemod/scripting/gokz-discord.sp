@@ -31,7 +31,7 @@ public Plugin myinfo =
 	name = "gokz-discord",
 	author = "zer0.k",
 	description = "",
-	version = "0.0.7",
+	version = "0.0.8",
 	url = "https://github.com/zer0k-z/gokz-discord"
 };
 
@@ -41,7 +41,9 @@ public void OnPluginStart()
 {
 	LoadTranslations("gokz-discord.phrases");
 	CreateConVars();
-	InitGlobals();
+	
+	gA_Records = new ArrayList(sizeof(Record));
+
 	InitAnnounceTimer();
 	RegConsoleCmd("sm_testdiscord", DiscordInit);
 
@@ -69,20 +71,17 @@ static void CreateConVars()
 	gCV_ShowThumbnail = AutoExecConfig_CreateConVar("gokz_discord_show_thumbnail", "1", "Show thumbnail in the announcement", _, true, 0.0, true, 1.0);
 	gCV_ShowRank = AutoExecConfig_CreateConVar("gokz_discord_show_rank", "1", "Show rank in the announcement", _, true, 0.0, true, 1.0);
 	gCV_ShowServer = AutoExecConfig_CreateConVar("gokz_discord_show_server", "1", "Show server in the announcement", _, true, 0.0, true, 1.0);
+	gCV_ShowTeleports = AutoExecConfig_CreateConVar("gokz_discord_show_teleports", "1", "Show teleport count in the announcement", _, true, 0.0, true, 1.0);
 
 	AutoExecConfig_ExecuteFile();
 	AutoExecConfig_CleanFile();	
-}
-static void InitGlobals()
-{
-	gA_Records = new ArrayList(sizeof(Record));
 }
 
 public void OnAllPluginsLoaded()
 {
 	if (!LibraryExists("gokz-core"))
 	{
-		SetFailState("Missing required plugin: gokz-core");
+		SetFailState("[GOKZ-Discord] Missing required plugin: gokz-core");
 	}
 
 	if (LibraryExists("updater"))
@@ -107,13 +106,25 @@ public void OnLibraryAdded(const char[] name)
 	{
 		Updater_AddPlugin(UPDATER_URL);
 	}
-	if (LibraryExists("gokz-global"))
+	if (StrEqual(name, "gokz-global"))
 	{
 		gB_GOKZGlobal = true;
 	}
-	if (LibraryExists("gokz-localranks"))
+	if (StrEqual(name, "gokz-localranks"))
 	{
 		gB_GOKZLocal = true;
+	}
+}
+
+public void OnLibraryRemoved(const char[] name)
+{
+	if (StrEqual(name, "gokz-global"))
+	{
+		gB_GOKZGlobal = false;
+	}
+	if (StrEqual(name, "gokz-localranks"))
+	{
+		gB_GOKZLocal = false;
 	}
 }
 
@@ -172,6 +183,7 @@ public Action Timer_CheckRecord(Handle timer)
 		}
 	}
 }
+
 void DiscordAnnounceRecord(Record record)
 {
 	int recordType = record.GetRecordType(gCV_MinRankLocal.IntValue, gCV_MinRankGlobal.IntValue);
@@ -180,7 +192,7 @@ void DiscordAnnounceRecord(Record record)
 		return;
 	}
 	char webHookURL[2048];
-	GetWebHook(webHookURL, sizeof(webHookURL));
+	GetWebHook(record, webHookURL, sizeof(webHookURL));
 	DiscordWebHook webHook = new DiscordWebHook(webHookURL);
 	webHook.Embed(CreateEmbed(record));
 	webHook.Send();
