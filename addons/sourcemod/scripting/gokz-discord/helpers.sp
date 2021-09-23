@@ -12,24 +12,36 @@ void UpdateDiscordKV()
 	gKV_DiscordConfig.ImportFromFile(sFile);
 }
 
-void GetWebHook(char[] url, int size)
+void GetWebHook(Record record, char[] url, int size)
 {
 	UpdateDiscordKV();
 	gKV_DiscordConfig.Rewind();
 	if (!gKV_DiscordConfig.JumpToKey("Webhook"))
 	{
-		SetFailState("[GetWebHook] Failed to obtain Discord webhook!");
+		SetFailState("[GOKZ-Discord] Failed to obtain Discord webhook!");
 	}
-	gKV_DiscordConfig.GetString("url", url, size);
+	
+	int recordType = record.GetRecordType(gCV_MinRankLocal.IntValue, gCV_MinRankGlobal.IntValue);
+	gKV_DiscordConfig.GetString(gC_RecordType_Names[recordType], url, size);
+	// Use default if there's no override
+	if (!url[0])
+	{
+		gKV_DiscordConfig.GetString("Default", url, size);
+	}
 }
 
 void DiscordReplaceString(Record record, char[] input, int size)
 {
 	char buffer[128];
+	// Map name
 	ReplaceString(input, size, "MAP_NAME", record.mapName);
 
+	// Course
 	IntToString(record.course, buffer, sizeof(buffer));
 	ReplaceString(input, size, "COURSE_NUMBER", buffer);
+
+	// Player data
+	ReplaceString(input, size, "PLAYER_NAME", record.playerName);
 
 	ReplaceString(input, size, "PLAYER_STEAM2", record.steamID32);
 	ReplaceString(input, size, "PLAYER_STEAM3", record.fullAccountID);
@@ -38,6 +50,7 @@ void DiscordReplaceString(Record record, char[] input, int size)
 	ReplaceString(input, size, "PLAYER_ACCOUNTID", buffer);
 	ReplaceString(input, size, "PLAYER_STEAM64", record.steamID64);
 
+	// Host
 	GetConVarString(FindConVar("hostname"), buffer, sizeof(buffer));
 	ReplaceString(input, size, "HOST_NAME", buffer);	
 	int ip[4];
@@ -47,6 +60,7 @@ void DiscordReplaceString(Record record, char[] input, int size)
 	IntToString(FindConVar("hostport").IntValue, buffer, sizeof(buffer));
 	ReplaceString(input, size, "HOST_PORT", buffer);
 
+	// Mode
 	gKV_DiscordConfig.Rewind();
 	if (!gKV_DiscordConfig.JumpToKey("Modes"))
 	{

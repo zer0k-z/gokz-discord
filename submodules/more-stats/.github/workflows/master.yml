@@ -1,0 +1,77 @@
+name: Compile with SourceMod
+
+on:
+  pull_request:
+    branches: main
+  push:
+    branches: main
+  workflow_dispatch:
+    
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        SM_VERSION: ["1.10"]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set environment variables
+        run: |
+          SOURCEMOD_PATH=$GITHUB_WORKSPACE/addons/sourcemod
+          echo "SOURCEMOD_PATH=$SOURCEMOD_PATH" >> $GITHUB_ENV
+          echo "SCRIPTS_PATH=addons/sourcemod/scripting" >> $GITHUB_ENV
+          echo "PLUGINS_PATH=$SOURCEMOD_PATH/plugins" >> $GITHUB_ENV
+
+      - name: Setup SourcePawn Compiler ${{ matrix.SM_VERSION }}
+        uses: rumblefrog/setup-sp@master
+        with:
+          version: ${{ matrix.SM_VERSION }}
+
+      - name: Compile Plugins
+        run: |
+          for file in more-stats*.sp
+          do
+            echo -e "\nCompiling $file..."
+            spcomp -w234 -O2 -v2 -i include $file
+          done
+        working-directory: ${{ env.SCRIPTS_PATH }}
+
+      - name: Move compiled plugins
+        run: |
+          rm -rf $PLUGINS_PATH
+          mkdir -p $PLUGINS_PATH
+          rsync -av --include='*/' --include="*.smx" --exclude="*" --prune-empty-dirs --remove-source-files $SCRIPTS_PATH/ $PLUGINS_PATH/
+
+      - name: Move folders to build
+        run: |
+          mkdir build
+          mv ./addons build/
+      
+      - name: Remove unnecessary files and folders from build
+        run: |
+          rm -rf addons/sourcemod/scripting
+        working-directory: ./build
+
+      - name: Compress package
+        run: zip -9rq ../more-stats.zip *
+        working-directory: ./build
+        
+      - name: Set Commit Hash
+        id: commit_info
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: "Automatic build using GitHub Actions"
+          tag_name: workflow-build${{ github.run_number }}
+          name: Build ${{ steps.commit_info.outputs.sha_short  }}
+          files: |
+            more-stats.zip
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

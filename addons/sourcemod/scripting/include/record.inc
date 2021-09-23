@@ -76,6 +76,18 @@ enum struct Record {
 	bool matchedLocal;
 	bool matchedGlobal;
 
+	// more-stats integration
+	int bhopCount;
+	int perfCount;
+	int airTime;
+	int strafeCount;
+	int overlap;
+	int deadAir;
+	int badAngles;
+	int aaTime;
+	int velChangeTime;
+	int scrollStats[5];
+	
 	// Core methods
 	void Init(int client, int course, float time, int teleportsUsed)
 	{
@@ -228,5 +240,20 @@ enum struct Record {
 			}
 		}
 		return recordType;
+	}
+
+	void InitMoreStats(int bhopCount, int perfCount, int airTime, int strafeCount, 
+		int overlap, int deadAir, int badAngles, int aaTime, int velChangeTime, int scrollStats[5])
+	{
+		this.bhopCount = bhopCount;
+		this.perfCount = perfCount;
+		this.airTime = airTime;
+		this.strafeCount = strafeCount;
+		this.overlap = overlap;
+		this.deadAir = deadAir;
+		this.badAngles = badAngles;
+		this.aaTime = aaTime;
+		this.velChangeTime = velChangeTime;
+		this.scrollStats = scrollStats;
 	}
 }
