@@ -24,7 +24,7 @@ void GetWebHook(Record record, char[] url, int size)
 	int recordType = record.GetRecordType(gCV_MinRankLocal.IntValue, gCV_MinRankGlobal.IntValue);
 	gKV_DiscordConfig.GetString(gC_RecordType_Names[recordType], url, size);
 	// Use default if there's no override
-	if (StrEqual(url, ""))
+	if (!url[0])
 	{
 		gKV_DiscordConfig.GetString("Default", url, size);
 	}

@@ -13,3 +13,6 @@
 [submodule "submodules/SteamWorks"]
 	path = submodules/SteamWorks
 	url = https://github.com/KyleSanderson/SteamWorks.git
+[submodule "submodules/more-stats"]
+	path = submodules/more-stats
+	url = https://github.com/zer0k-z/more-stats.git

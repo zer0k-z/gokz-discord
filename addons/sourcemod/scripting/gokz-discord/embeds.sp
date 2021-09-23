@@ -25,7 +25,15 @@ DiscordEmbed CreateEmbed(Record record)
 	{
 		embed.WithThumbnail(Thumbnail(record));
 	}
-	embed.Timestamp = new DateTime(record.timestamp);
+	if (gCV_ShowTimestamp.BoolValue)
+	{
+		embed.Timestamp = new DateTime(record.timestamp);
+	}
+	if (gCV_UseMoreStats.BoolValue && gB_MoreStats)
+	{
+
+		embed.AddField(MoreStatsField(record));
+	}
 	embed.SetColor(Color(record));
 	return embed;
 }
@@ -54,7 +62,7 @@ static DiscordEmbedField ModeField(Record record)
 
 static DiscordEmbedField MapField(Record record)
 {
-	char buffer[64];
+	char buffer[768];
 	gKV_DiscordConfig.Rewind();
 	if (!gKV_DiscordConfig.JumpToKey("Map"))
 	{
@@ -197,6 +205,91 @@ static char[] TitleField(Record record)
 	Format(title, sizeof(title), "%T", gC_RecordType_Names[recType], LANG_SERVER);
 
 	return title;
+}
+
+static DiscordEmbedField MoreStatsField(Record record)
+{
+	char value[MAX_FIELD_VALUE_LENGTH];
+	char buffer[64];
+	float percent;
+	float percent2;	
+	
+	if (gCV_ShowPerfCount.BoolValue)
+	{
+		percent = record.perfCount == 0 ? 0.0 : float(record.perfCount) / record.bhopCount * 100;
+		FormatEx(buffer, sizeof(buffer), "Perfect Bhops: %i/%i (%.2f%%)\n", record.perfCount, record.bhopCount, percent);
+		StrCat(value, MAX_FIELD_VALUE_LENGTH, buffer);
+	}
+	if (gCV_ShowStrafeCount.BoolValue)
+	{
+		FormatEx(buffer, sizeof(buffer), "Air Strafes: %i\n", record.strafeCount);
+		StrCat(value, MAX_FIELD_VALUE_LENGTH, buffer);
+	}
+	if (gCV_ShowAirTicks.BoolValue)
+	{
+		FormatEx(buffer, sizeof(buffer), "Air Time: %i tick%s (%s)\n", record.airTime, record.airTime <= 1 ? "" : "s", GOKZ_FormatTime(record.airTime * GetTickInterval()));
+		StrCat(value, MAX_FIELD_VALUE_LENGTH, buffer);
+	}
+	if (gCV_ShowAASync.BoolValue || gCV_ShowVelChangeSync.BoolValue)
+	{
+		if (gCV_ShowAASync.BoolValue && gCV_ShowVelChangeSync.BoolValue)
+		{
+			percent = record.aaTime == 0 ? 0.0 : float(record.aaTime) / float(record.airTime) * 100;
+			percent2 = record.velChangeTime == 0 ? 0.0 : float(record.velChangeTime) / record.airTime * 100;
+			FormatEx(buffer, sizeof(buffer), "Air Accel Sync: %.2f%% | Vel Change Sync: %.2f%%\n", percent, percent2);
+		}
+		else if (gCV_ShowAASync.BoolValue)
+		{
+			percent = record.aaTime == 0 ? 0.0 : float(record.aaTime) / record.airTime * 100;
+			FormatEx(buffer, sizeof(buffer), "Air Accel Sync: %.2f%%\n", percent);
+		}
+		else
+		{
+			percent = record.velChangeTime == 0 ? 0.0 : float(record.velChangeTime) / record.airTime * 100;
+			FormatEx(buffer, sizeof(buffer), "Vel Change Sync: %.2f%%\n", percent);
+		}
+		StrCat(value, MAX_FIELD_VALUE_LENGTH, buffer);
+	}
+	if (gCV_ShowOverlap.BoolValue)
+	{
+		percent = record.overlap == 0 ? 0.0 : float(record.overlap) / record.airTime * 100;
+		FormatEx(buffer, sizeof(buffer), "Overlap: %i tick%s (%.2f%%)\n", record.overlap, record.overlap <= 1 ? "" : "s", percent);
+		StrCat(value, MAX_FIELD_VALUE_LENGTH, buffer);
+	}
+	if (gCV_ShowDeadAir.BoolValue)
+	{
+		percent = record.deadAir == 0 ? 0.0 : float(record.deadAir) / record.airTime * 100;
+		FormatEx(buffer, sizeof(buffer), "Dead Air: %i tick%s (%.2f%%)\n", record.deadAir, record.deadAir <= 1 ? "" : "s", percent);
+		StrCat(value, MAX_FIELD_VALUE_LENGTH, buffer);
+	}
+	if (gCV_ShowBadAngles.BoolValue)
+	{
+		percent = record.badAngles == 0 ? 0.0 : float(record.badAngles) / record.airTime * 100;
+		FormatEx(buffer, sizeof(buffer), "Bad Angles: %i tick%s (%.2f%%)\n", record.badAngles, record.badAngles <= 1 ? "" : "s", percent);
+		StrCat(value, MAX_FIELD_VALUE_LENGTH, buffer);
+	}
+	if (gCV_ShowScrollStats.BoolValue)
+	{
+		float efficiency;
+		int registeredScrolls = record.scrollStats[ScrollEff_RegisteredScrolls];
+		int fastScrolls = record.scrollStats[ScrollEff_FastScrolls];
+		int slowScrolls = record.scrollStats[ScrollEff_SlowScrolls];
+		int timingTotal = record.scrollStats[ScrollEff_TimingTotal];
+		int timingSamples = record.scrollStats[ScrollEff_TimingSamples];
+		int badScrolls = fastScrolls + slowScrolls;
+		if (registeredScrolls + badScrolls == 0)
+		{
+			efficiency = 0.0;
+		}
+		else 
+		{
+			efficiency = registeredScrolls / (float(registeredScrolls) + (float(badScrolls) / 1.5)) * 100.0;
+		}
+		float timingOffset = (timingSamples == 0) ? 0.0 : timingTotal / float(timingSamples);
+		FormatEx(buffer, sizeof(buffer), "Scroll Efficiency: (%.2f%%) | Average Timing: %s%.2f\n", efficiency, timingOffset >= 0.0 ? "+" : "", timingOffset);
+		StrCat(value, MAX_FIELD_VALUE_LENGTH, buffer);
+	}
+	return new DiscordEmbedField("More Stats", value, false);
 }
 
 static char[] Color(Record record)
