@@ -57,6 +57,7 @@ public void GOKZ_GL_OnNewTopTime(int client, int course, int mode, int timeType,
 		gA_Records.GetArray(i, record);
 		if (record.InitGlobal(client, course, mode, timeType, rank, rankOverall, runTime))
 		{
+			gA_Records.SetArray(i, record);
 			break;
 		}
 	}
