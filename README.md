@@ -31,9 +31,10 @@ If your GOKZ server is global, it already has all the required dependencies. Not
 2. Grab the latest release from the release page and unzip it in your server folder.
 **Note**: The plugin has Updater plugin support. If you have Updater installed, do not place the plugins in non-default folder configuration. Doing so might cause duplicate plugins in your server!
 3. Restart the server or type `sm plugins load gokz-discord` in the console to load the plugin.
-4. The config file will be automatically generated in `cfg/sourcemod/gokz-discord.cfg`
+4. The config file will be automatically generated in `cfg/sourcemod/gokz/gokz-discord.cfg`
 
 ## Configuration ##
+- Webhook configs can be found in `addons/sourcemod/configs/gokz-discord.cfg`.
 - You can modify the phrases in `addons/sourcemod/translations/gokz-discord.phrases.txt`.
 - Once the plugin has been loaded, you can modify the cvars in `cfg/sourcemod/gokz/gokz-discord.cfg`.
 
