@@ -32,7 +32,7 @@ public Plugin myinfo =
 	name = "GOKZ Discord",
 	author = "zer0.k",
 	description = "",
-	version = "0.1.2",
+	version = "0.1.3",
 	url = "https://github.com/zer0k-z/gokz-discord"
 };
 
