@@ -35,5 +35,5 @@ If your GOKZ server is global, it already has all the required dependencies. Not
 
 ## Configuration ##
 - You can modify the phrases in `addons/sourcemod/translations/gokz-discord.phrases.txt`.
-- Once the plugin has been loaded, you can modify the cvars in `cfg/sourcemod/gokz-discord.cfg`.
+- Once the plugin has been loaded, you can modify the cvars in `cfg/sourcemod/gokz/gokz-discord.cfg`.
 
