@@ -29,14 +29,14 @@
 
 public Plugin myinfo =
 {
-	name = "gokz-discord",
+	name = "GOKZ Discord",
 	author = "zer0.k",
 	description = "",
-	version = "0.1.1",
+	version = "0.1.2",
 	url = "https://github.com/zer0k-z/gokz-discord"
 };
 
-#define UPDATER_URL "https://raw.githubusercontent.com/zer0k-z/gokz-discord2/updater/updatefile.txt"
+#define UPDATER_URL "https://raw.githubusercontent.com/zer0k-z/gokz-discord/updater/updatefile.txt"
 
 public void OnPluginStart()
 {
