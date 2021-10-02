@@ -27,7 +27,9 @@ DiscordEmbed CreateEmbed(Record record)
 	}
 	if (gCV_ShowTimestamp.BoolValue)
 	{
-		embed.Timestamp = new DateTime(record.timestamp);
+		char timestampString[256];
+		FormatTime(timestampString, sizeof(timestampString), "%Y-%m-%d %H:%M:%S%z", record.timestamp);
+		embed.SetString("timestamp", timestampString);
 	}
 	if (gCV_UseMoreStats.BoolValue && gB_MoreStats)
 	{
