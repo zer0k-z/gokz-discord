@@ -288,7 +288,7 @@ static DiscordEmbedField MoreStatsField(Record record)
 			efficiency = registeredScrolls / (float(registeredScrolls) + (float(badScrolls) / 1.5)) * 100.0;
 		}
 		float timingOffset = (timingSamples == 0) ? 0.0 : timingTotal / float(timingSamples);
-		FormatEx(buffer, sizeof(buffer), "Scroll Efficiency: (%.2f%%) | Average Timing: %s%.2f\n", efficiency, timingOffset >= 0.0 ? "+" : "", timingOffset);
+		FormatEx(buffer, sizeof(buffer), "Scroll Efficiency: %.2f%% | Average Timing: %s%.2f\n", efficiency, timingOffset >= 0.0 ? "+" : "", timingOffset);
 		StrCat(value, MAX_FIELD_VALUE_LENGTH, buffer);
 	}
 	return new DiscordEmbedField("More Stats", value, false);
