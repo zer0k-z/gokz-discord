@@ -203,3 +203,35 @@ native int MoreStats_GetAirAccelTime(int client, int mode, int scope);
  * @return				Player's tick count on the specified mode.
  */
 native int MoreStats_GetAirVelChangeTime(int client, int mode, int scope);
+
+// Dependency
+
+public SharedPlugin __pl_more_stats = 
+{
+	name = "more-stats", 
+	file = "more-stats.smx", 
+	#if defined REQUIRE_PLUGIN
+	required = 1, 
+	#else
+	required = 0, 
+	#endif
+};
+
+#if !defined REQUIRE_PLUGIN
+public void __pl_more_stats_SetNTVOptional()
+{
+	MarkNativeAsOptional("MoreStats_GetResetCount");
+	MarkNativeAsOptional("MoreStats_GetCompletionCount");
+	MarkNativeAsOptional("MoreStats_GetBhopTicks");
+	MarkNativeAsOptional("MoreStats_GetPerfStreaks");
+	MarkNativeAsOptional("MoreStats_GetScrollStats");
+	MarkNativeAsOptional("MoreStats_GetPerfCount");
+	MarkNativeAsOptional("MoreStats_GetAirTime");
+	MarkNativeAsOptional("MoreStats_GetStrafeCount");
+	MarkNativeAsOptional("MoreStats_GetOverlap");
+	MarkNativeAsOptional("MoreStats_GetDeadAir");
+	MarkNativeAsOptional("MoreStats_GetBadAngles");
+	MarkNativeAsOptional("MoreStats_GetAirAccelTime");
+	MarkNativeAsOptional("MoreStats_GetAirVelChangeTime");	
+}
+#endif
