@@ -24,6 +24,7 @@ Changing the webhook's name or channel will **not** alter the link.
  * [GOKZ](https://bitbucket.org/kztimerglobalteam/gokz), with global and/or localranks modules
  * [SteamWorks](https://forums.alliedmods.net/showthread.php?t=229556)
  * [More Stats](https://github.com/zer0k-z/more-stats) (Optional)
+ * [Updater](https://forums.alliedmods.net/showthread.php?t=169095) (Optional)
  
 If your GOKZ server is global, it already has all the required dependencies. Note that your server does **not** need to be global in order to use this plugin.
 

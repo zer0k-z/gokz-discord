@@ -32,7 +32,7 @@ public Plugin myinfo =
 	name = "GOKZ Discord",
 	author = "zer0.k",
 	description = "",
-	version = "0.1.8",
+	version = "0.2.0",
 	url = "https://github.com/zer0k-z/gokz-discord"
 };
 
@@ -217,6 +217,27 @@ void DiscordAnnounceRecord(Record record)
 	GetWebHook(record, webHookURL, sizeof(webHookURL));
 	DiscordWebHook webHook = new DiscordWebHook(webHookURL);
 	webHook.Embed(CreateEmbed(record));
+	webHook.SetContent(AnnounceContent(record));
 	webHook.Send();
 	webHook.Dispose();
+}
+
+static char[] AnnounceContent(Record record)
+{
+	char value[MAX_FIELD_VALUE_LENGTH];
+	gKV_DiscordConfig.Rewind();
+	if (!gKV_DiscordConfig.JumpToKey("Content"))
+	{
+		gKV_DiscordConfig.JumpToKey("Content", true);
+		gKV_DiscordConfig.SetString("Content", " ");
+		char sFile[PLATFORM_MAX_PATH];
+		BuildPath(Path_SM, sFile, sizeof(sFile), "configs/gokz-discord.cfg");
+		gKV_DiscordConfig.Rewind();
+		gKV_DiscordConfig.ExportToFile(sFile);
+		return value;
+	}
+
+	gKV_DiscordConfig.GetString("Content", value, sizeof(value));
+	DiscordReplaceString(record, value, sizeof(value));	
+	return value;
 }
