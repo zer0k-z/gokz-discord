@@ -27,13 +27,10 @@ DiscordEmbed CreateEmbed(Record record)
 	}
 	if (gCV_ShowTimestamp.BoolValue)
 	{
-		char timestampString[256];
-		FormatTime(timestampString, sizeof(timestampString), "%Y-%m-%d %H:%M:%S%z", record.timestamp);
-		embed.SetString("timestamp", timestampString);
+		embed.WithTimestamp(new DateTime(record.timestamp));
 	}
 	if (gCV_UseMoreStats.BoolValue && gB_MoreStats)
 	{
-
 		embed.AddField(MoreStatsField(record));
 	}
 	embed.SetColor(Color(record));
@@ -44,9 +41,10 @@ static DiscordEmbedField PlayerField(Record record)
 {
 	char buffer[768];
 	gKV_DiscordConfig.Rewind();
-	if (!gKV_DiscordConfig.JumpToKey("Player"))
+	if (!gKV_DiscordConfig.JumpToKey("Player", true))
 	{
-		SetFailState("[GOKZ-Discord] Failed to obtain Discord Player config!");
+		gKV_DiscordConfig.SetString("url", "https://steamcommunity.com/profiles/PLAYER_STEAM64");
+
 	}
 	
 	gKV_DiscordConfig.GetString("url", buffer, sizeof(buffer));
@@ -193,10 +191,16 @@ static DiscordEmbedField ServerField(Record record)
 	gKV_DiscordConfig.GetString("url", url, sizeof(url));
 	
 	char value[MAX_FIELD_VALUE_LENGTH];
-	FormatEx(value, MAX_FIELD_VALUE_LENGTH, "[%s](%s)", name, url);
-	DiscordReplaceString(record, value, sizeof(value));
+	if (!url[0])
+	{
+		FormatEx(value, MAX_FIELD_VALUE_LENGTH, "%s", name);
+	}
+	else
+	{
+		FormatEx(value, MAX_FIELD_VALUE_LENGTH, "[%s](%s)", name, url);
+	}
 
-	
+	DiscordReplaceString(record, value, sizeof(value));	
 	return new DiscordEmbedField("Server", value, false);
 }
 
